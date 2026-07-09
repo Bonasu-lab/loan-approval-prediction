@@ -1,0 +1,8 @@
+gender,married,dependents,education,self_emp,income,co_income,loan_amount,term,credit_history,property_area,prediction_result
+Male,Yes,0,Graduate,No,5849,0,128,360,Good,Urban,Approved ✅
+Male,Yes,1,Graduate,No,4583,1508,128,360,Good,Rural,Approved ✅
+Male,Yes,0,Graduate,Yes,3000,0,66,360,Good,Urban,Approved ✅
+Male,No,0,Graduate,No,6000,0,141,360,Good,Urban,Approved ✅
+Male,Yes,2,Graduate,No,5417,4196,267,360,Good,Urban,Approved ✅
+Male,Yes,3+,Graduate,No,3036,2504,158,360,Bad,Semiurban,Rejected ❌
+Female,No,0,Graduate,No,3500,0,115,360,Good,Semiurban,Approved ✅
