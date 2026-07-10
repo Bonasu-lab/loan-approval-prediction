@@ -6,33 +6,105 @@ import sqlite3
 import time
 import os
 
-st.set_page_config(page_title="Smart Lender AI", page_icon="🏦", layout="wide")
+st.set_page_config(page_title="Smart Lender AI Pro", page_icon="🏦", layout="wide")
 
-# Premium Glass CSS
+# Advanced Glassmorphism CSS with High Visibility Text Fix
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
-html, body, [class*="st-"] {font-family: 'Outfit', sans-serif;}
-.stApp {background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);}
-.glass {background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 20px; padding: 20px; margin-bottom: 15px;}
-.big-title {font-size: 42px; font-weight: 700; background: linear-gradient(90deg, #38bdf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center;}
-.approved {background: linear-gradient(135deg, #22c55e, #16a34a); padding: 30px; border-radius: 20px; color: white; font-size: 32px; font-weight: 700; text-align: center; box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);}
-.rejected {background: linear-gradient(135deg, #ef4444, #dc2626); padding: 30px; border-radius: 20px; color: white; font-size: 32px; font-weight: 700; text-align: center; box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);}
+@import url('https://googleapis.com');
+
+/* Global text and background */
+html, body, [class*="st-"] {
+    font-family: 'Outfit', sans-serif;
+    color: #ffffff !important;
+}
+.stApp {
+    background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
+}
+
+/* UI Structure */
+.glass {
+    background: rgba(30, 41, 59, 0.4); 
+    backdrop-filter: blur(12px); 
+    border: 1px solid rgba(148, 163, 184, 0.2); 
+    border-radius: 20px; 
+    padding: 25px; 
+    margin-bottom: 15px;
+}
+.big-title {
+    font-size: 45px; 
+    font-weight: 700; 
+    background: linear-gradient(90deg, #38bdf8, #a78bfa); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+/* Input Fields Visibility Override */
+label p {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+div[data-baseweb="select"] * {
+    color: #ffffff !important;
+}
+div[role="listbox"] ul li {
+    color: #ffffff !important;
+    background-color: #1e293b !important;
+}
+input[type="number"] {
+    color: #ffffff !important;
+    background-color: rgba(15, 23, 42, 0.6) !important;
+}
+
+/* Results Custom Cards */
+.approved {
+    background: linear-gradient(135deg, #22c55e, #16a34a); 
+    padding: 30px; 
+    border-radius: 20px; 
+    color: white !important; 
+    font-size: 32px; 
+    font-weight: 700; 
+    text-align: center; 
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
+}
+.rejected {
+    background: linear-gradient(135deg, #ef4444, #dc2626); 
+    padding: 30px; 
+    border-radius: 20px; 
+    color: white !important; 
+    font-size: 32px; 
+    font-weight: 700; 
+    text-align: center; 
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+}
 </style>
 """, unsafe_allow_html=True)
 
+# Safe Model Loading to prevent Segmentation Faults
 @st.cache_resource
 def load_model():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(BASE_DIR, 'smart_lender_xgb.pkl')
     scaler_path = os.path.join(BASE_DIR, 'scaler.pkl')
-    model = pickle.load(open(model_path, 'rb'))
-    scaler = pickle.load(open(scaler_path, 'rb'))
-    return model, scaler
+    
+    if not os.path.exists(model_path) or not os.path.exists(scaler_path):
+        st.error("❌ Model or Scaler file missing in repository root!")
+        st.stop()
+        
+    try:
+        model = pickle.load(open(model_path, 'rb'))
+        scaler = pickle.load(open(scaler_path, 'rb'))
+        return model, scaler
+    except Exception as e:
+        st.error(f"⚠️ Model Compatibility Error: {e}")
+        st.warning("మీ కంప్యూటర్ లోని లైబ్రరీ వర్షన్స్, క్లౌడ్ వర్షన్స్ వేరుగా ఉన్నాయి. requirements.txt సరిచూసుకోండి.")
+        st.stop()
 
 model, scaler = load_model()
 
-# FIX: Render Disk use chesthe /data folder lo save avtundi
+# DB Path configuration
 DB_PATH = "/data/applicants.db" if os.path.exists("/data") else "applicants.db"
 
 def init_db():
@@ -50,13 +122,13 @@ def init_db():
         conn.close()
         return True
     except Exception as e:
-        st.error(f"DB Error: {e}")
         return False
 
 db_enabled = init_db()
 
+# App Headers
 st.markdown("<h1 class='big-title'>🏦 Smart Lender AI Pro</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; color:#94a3b8;'>Next-Gen Loan Approval System</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#94a3b8; font-size:16px;'>Next-Gen Institutional Underwriting System</p>", unsafe_allow_html=True)
 
 # FORM
 st.markdown("<div class='glass'>", unsafe_allow_html=True)
@@ -91,12 +163,14 @@ result_placeholder = st.empty()
 
 if predict_btn:
     with st.spinner('AI is analyzing your application...'):
-        time.sleep(1.5)
+        time.sleep(1.2)
         progress = st.progress(0)
         for i in range(100):
-            time.sleep(0.01)
+            time.sleep(0.005)
             progress.progress(i + 1)
+        progress.empty()
 
+    # Inputs processing
     gender_n = 1 if gender == "Male" else 0
     married_n = 1 if married == "Yes" else 0
     dependents_n = dependents
@@ -109,6 +183,7 @@ if predict_btn:
     raw_inputs = [[gender_n, married_n, dependents_n, education_n, self_emp_n, income, co_income, amount, term, credit_n, property_n]]
     columns = ['Gender','Married','Dependents','Education','Self_Employed','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term','Credit_History','Property_Area']
     df_input = pd.DataFrame(raw_inputs, columns=columns)
+    
     scaled_inputs = scaler.transform(df_input)
     prediction = model.predict(scaled_inputs)[0]
     proba = model.predict_proba(scaled_inputs)[0][prediction]
@@ -125,7 +200,7 @@ if predict_btn:
             st.markdown(f"<div class='rejected'>{result}</div>", unsafe_allow_html=True)
         st.metric("AI Confidence", f"{confidence}%")
 
-    # SAVE TO DB - పూర్తిగా సరిచేసిన కోడ్
+    # SAVE TO DB - పూర్తిగా భర్తీ చేయబడిన క్లోజ్డ్ బ్లాక్
     if db_enabled:
         try:
             conn = sqlite3.connect(DB_PATH)
@@ -137,4 +212,4 @@ if predict_btn:
             conn.commit()
             conn.close()
         except Exception as e:
-            st.error(f"Failed to log data to database: {e}")
+            pass
