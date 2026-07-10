@@ -30,7 +30,7 @@ html, body, [class*="st-"] {
     margin-bottom: 2rem;
 }
 .big-title {
-    font-size: 50px;
+    font-size: 45px;
     font-weight: 800;
     letter-spacing: -1px;
     background: linear-gradient(135deg, #38bdf8 0%, #a78bfa 50%, #f472b6 100%);
@@ -68,7 +68,6 @@ html, body, [class*="st-"] {
 }
 
 /* TEXT VISIBILITY FIX FOR STREAMLIT INPUTS */
-/* Labels Visibility */
 label p {
     color: #e2e8f0 !important;
     font-weight: 500 !important;
@@ -190,7 +189,7 @@ def init_db():
         conn.commit()
         conn.close()
         return True
-    except Exception as e:
+    except:
         return False
 
 db_enabled = init_db()
@@ -300,3 +299,4 @@ if predict_btn:
             cursor = conn.cursor()
             cursor.execute('''INSERT INTO loan_logs 
                 (gender, married, dependents, education, self_emp, income, co_income, loan_amount, term, credit_history, property_area, prediction_result) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
