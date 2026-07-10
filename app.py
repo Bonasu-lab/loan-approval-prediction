@@ -8,15 +8,14 @@ import os
 
 st.set_page_config(page_title="Smart Lender AI Pro", page_icon="🏦", layout="wide")
 
-# Advanced Glassmorphism CSS with High Visibility Text Fix
+# Advanced Glassmorphism CSS with Inputs Font Color Fix
 st.markdown("""
 <style>
 @import url('https://googleapis.com');
 
-/* Global text and background */
-html, body, [class*="st-"] {
+/* Main App Layout */
+html, body {
     font-family: 'Outfit', sans-serif;
-    color: #ffffff !important;
 }
 .stApp {
     background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
@@ -41,21 +40,48 @@ html, body, [class*="st-"] {
     margin-bottom: 5px;
 }
 
-/* Input Fields Visibility Override */
+/* CRITICAL FIX: LABELS AND INPUT FONTS VISIBILITY */
+/* Input Field Labels (Main Labels) */
 label p {
-    color: #e2e8f0 !important;
+    color: #f1f5f9 !important;
     font-weight: 600 !important;
+    font-size: 15px !important;
 }
-div[data-baseweb="select"] * {
-    color: #ffffff !important;
+
+/* Dropdown (Selectbox) Inner Text Fix */
+div[data-baseweb="select"] div {
+    color: #0f172a !important; /* బాక్స్ లోపల అక్షరాలు ముదురు నలుపు రంగులోకి మారతాయి */
+    font-weight: 500 !important;
 }
+
+/* Dropdown Options List Text Fix */
 div[role="listbox"] ul li {
     color: #ffffff !important;
     background-color: #1e293b !important;
 }
+div[role="listbox"] ul li:hover {
+    background-color: #38bdf8 !important;
+    color: #020617 !important;
+}
+
+/* Number Input Text Fix */
 input[type="number"] {
-    color: #ffffff !important;
+    color: #ffffff !important; /* నంబర్ టైప్ చేసే అక్షరాలు వైట్ కలర్ */
     background-color: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+}
+
+/* Radio Button Text Fix */
+div[role="radiogroup"] label p {
+    color: #ffffff !important;
+}
+
+/* Metric text fix */
+div[data-testid="stMetricValue"] div {
+    color: #ffffff !important;
+}
+div[data-testid="stMetricLabel"] p {
+    color: #94a3b8 !important;
 }
 
 /* Results Custom Cards */
@@ -82,7 +108,7 @@ input[type="number"] {
 </style>
 """, unsafe_allow_html=True)
 
-# Safe Model Loading to prevent Segmentation Faults
+# Safe Model Loading
 @st.cache_resource
 def load_model():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -90,7 +116,7 @@ def load_model():
     scaler_path = os.path.join(BASE_DIR, 'scaler.pkl')
     
     if not os.path.exists(model_path) or not os.path.exists(scaler_path):
-        st.error("❌ Model or Scaler file missing in repository root!")
+        st.error("❌ Model or Scaler file missing!")
         st.stop()
         
     try:
@@ -99,7 +125,6 @@ def load_model():
         return model, scaler
     except Exception as e:
         st.error(f"⚠️ Model Compatibility Error: {e}")
-        st.warning("మీ కంప్యూటర్ లోని లైబ్రరీ వర్షన్స్, క్లౌడ్ వర్షన్స్ వేరుగా ఉన్నాయి. requirements.txt సరిచూసుకోండి.")
         st.stop()
 
 model, scaler = load_model()
@@ -121,7 +146,7 @@ def init_db():
         conn.commit()
         conn.close()
         return True
-    except Exception as e:
+    except:
         return False
 
 db_enabled = init_db()
@@ -200,7 +225,7 @@ if predict_btn:
             st.markdown(f"<div class='rejected'>{result}</div>", unsafe_allow_html=True)
         st.metric("AI Confidence", f"{confidence}%")
 
-    # SAVE TO DB - పూర్తిగా భర్తీ చేయబడిన క్లోజ్డ్ బ్లాక్
+    # SAVE TO DB
     if db_enabled:
         try:
             conn = sqlite3.connect(DB_PATH)
@@ -211,5 +236,5 @@ if predict_btn:
                 (gender, married, dependents, education, self_emp, income, co_income, amount, term, credit, property_area, result))
             conn.commit()
             conn.close()
-        except Exception as e:
+        except:
             pass
