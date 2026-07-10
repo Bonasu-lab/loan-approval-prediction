@@ -261,8 +261,8 @@ if predict_btn:
     
     # AI Predictions
     scaled_inputs = scaler.transform(df_input)
-    prediction = model.predict(scaled_inputs)[0]
-    proba = model.predict_proba(scaled_inputs)[0][prediction]
+    prediction = model.predict(scaled_inputs)
+    proba = model.predict_proba(scaled_inputs)[prediction]
     confidence = round(proba * 100, 2)
 
     # UI Rendering based on Results
@@ -300,3 +300,4 @@ if predict_btn:
             cursor.execute('''INSERT INTO loan_logs 
                 (gender, married, dependents, education, self_emp, income, co_income, loan_amount, term, credit_history, property_area, prediction_result) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
+
