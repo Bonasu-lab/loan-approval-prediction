@@ -8,9 +8,6 @@ import os
 
 st.set_page_config(page_title="Smart Lender AI", page_icon="🏦", layout="wide")
 
-# Render ki port env nundi teeskovadam
-PORT = int(os.environ.get("PORT", 8501))
-
 # Premium Glass CSS
 st.markdown("""
 <style>
@@ -90,7 +87,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 predict_btn = st.button("🚀 Run AI Prediction", use_container_width=True, type="primary")
 
 # RESULT SECTION
-result_placeholder = st.empty() # Auto scroll kosam
+result_placeholder = st.empty()
 
 if predict_btn:
     with st.spinner('AI is analyzing your application...'):
@@ -128,24 +125,9 @@ if predict_btn:
             st.markdown(f"<div class='rejected'>{result}</div>", unsafe_allow_html=True)
         st.metric("AI Confidence", f"{confidence}%")
 
-    # SAVE TO DB
+    # SAVE TO DB - FIX: 12? undali
     if db_enabled:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute('''INSERT INTO loan_logs
-            (gender, married, dependents, education, self_emp, income, co_income, loan_amount, term, credit_history, property_area, prediction_result)
-            VALUES (?,?,?,?,?,?,?,?)''',
-            (gender, married, dependents, education, self_emp, income, co_income, amount, term, credit, property_area, result))
-        conn.commit()
-        conn.close()
-
-# HISTORY
-st.markdown("---")
-st.markdown("### 📜 Last 10 Applications")
-if db_enabled:
-    conn = sqlite3.connect(DB_PATH)
-    df = pd.read_sql_query("SELECT * FROM loan_logs ORDER BY id DESC LIMIT 10", conn)
-    conn.close()
-    st.dataframe(df, use_container_width=True)
-else:
-    st.warning("⚠️ History disabled. Add Render Disk to enable.")
+            (gender, married, dependents, education, self_emp, income, co_income, loan_amount, term
