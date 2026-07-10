@@ -125,9 +125,16 @@ if predict_btn:
             st.markdown(f"<div class='rejected'>{result}</div>", unsafe_allow_html=True)
         st.metric("AI Confidence", f"{confidence}%")
 
-    # SAVE TO DB - FIX: 12? undali
+    # SAVE TO DB - పూర్తిగా సరిచేసిన కోడ్
     if db_enabled:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute('''INSERT INTO loan_logs
-            (gender, married, dependents, education, self_emp, income, co_income, loan_amount, term
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute('''INSERT INTO loan_logs 
+                (gender, married, dependents, education, self_emp, income, co_income, loan_amount, term, credit_history, property_area, prediction_result) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
+                (gender, married, dependents, education, self_emp, income, co_income, amount, term, credit, property_area, result))
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            st.error(f"Failed to log data to database: {e}")
