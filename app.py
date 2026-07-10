@@ -9,7 +9,7 @@ import os
 # Page Configuration
 st.set_page_config(page_title="Smart Lender AI Pro", page_icon="🏦", layout="wide")
 
-# Advanced Futuristic Glassmorphism CSS
+# Advanced Futuristic Glassmorphism CSS with High Visibility Text Fix
 st.markdown("""
 <style>
 @import url('https://googleapis.com');
@@ -17,7 +17,7 @@ st.markdown("""
 /* Global Styles */
 html, body, [class*="st-"] {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #f8fafc;
+    color: #ffffff !important;
 }
 .stApp {
     background: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 100%);
@@ -40,7 +40,7 @@ html, body, [class*="st-"] {
 }
 .sub-title {
     font-size: 18px;
-    color: #94a3b8;
+    color: #94a3b8 !important;
     font-weight: 400;
 }
 
@@ -58,13 +58,47 @@ html, body, [class*="st-"] {
 .section-header {
     font-size: 20px;
     font-weight: 600;
-    color: #38bdf8;
+    color: #38bdf8 !important;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
     border-bottom: 1px solid rgba(56, 189, 248, 0.2);
     padding-bottom: 8px;
+}
+
+/* TEXT VISIBILITY FIX FOR STREAMLIT INPUTS */
+/* Labels Visibility */
+label p {
+    color: #e2e8f0 !important;
+    font-weight: 500 !important;
+    font-size: 15px !important;
+}
+
+/* Dropdown (Selectbox) Text Color Fix */
+div[data-baseweb="select"] * {
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+div[role="listbox"] ul li {
+    color: #ffffff !important;
+    background-color: #1e293b !important;
+}
+div[role="listbox"] ul li:hover {
+    background-color: #38bdf8 !important;
+    color: #020617 !important;
+}
+
+/* Number Input Text Color Fix */
+input[type="number"] {
+    color: #ffffff !important;
+    background-color: rgba(30, 41, 59, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Radio Button Text Color Fix */
+div[role="radiogroup"] label {
+    color: #ffffff !important;
 }
 
 /* Prediction Results */
@@ -74,7 +108,6 @@ html, body, [class*="st-"] {
     color: white;
     text-align: center;
     margin-top: 25px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 .approved-ui {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%);
@@ -82,7 +115,7 @@ html, body, [class*="st-"] {
     box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
 }
 .approved-title {
-    color: #34d399;
+    color: #34d399 !important;
     font-size: 36px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -93,7 +126,7 @@ html, body, [class*="st-"] {
     box-shadow: 0 0 40px rgba(239, 68, 68, 0.2);
 }
 .rejected-title {
-    color: #f87171;
+    color: #f87171 !important;
     font-size: 36px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -112,21 +145,13 @@ html, body, [class*="st-"] {
 .metric-value {
     font-size: 28px;
     font-weight: 700;
-    color: #a78bfa;
+    color: #a78bfa !important;
 }
 .metric-label {
     font-size: 12px;
-    color: #94a3b8;
+    color: #94a3b8 !important;
     text-transform: uppercase;
     letter-spacing: 1px;
-}
-
-/* Form Overrides for Premium Look */
-div[data-baseweb="select"] {
-    background-color: rgba(15, 23, 42, 0.5) !important;
-}
-div[role="radiogroup"] {
-    gap: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -178,7 +203,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Main Form Container (Single Unified Glass Grid)
+# Main Form Container
 st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 
@@ -275,9 +300,3 @@ if predict_btn:
             cursor = conn.cursor()
             cursor.execute('''INSERT INTO loan_logs 
                 (gender, married, dependents, education, self_emp, income, co_income, loan_amount, term, credit_history, property_area, prediction_result) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
-                (gender, married, dependents, education, self_emp, income, co_income, amount, term, credit, property_area, result_str))
-            conn.commit()
-            conn.close()
-        except:
-            pass
